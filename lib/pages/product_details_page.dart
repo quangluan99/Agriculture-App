@@ -1,6 +1,8 @@
 import 'package:agriculture_app/models/product.dart';
+import 'package:agriculture_app/models/service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   const ProductDetailsPage({super.key, required this.product});
@@ -11,16 +13,31 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  int count = 1;
-  bool showMORE = false;
-  late TapGestureRecognizer gestureRecognizer;
+  int quantity = 0;
+  void addQuantity() {
+    setState(() {
+      quantity++;
+    });
+  }
+
+  void removeQuantity() {
+    if (quantity > 0) {
+      setState(() {
+        quantity--;
+      });
+    }
+  }
+
+  bool showMore = false;
+
+  late TapGestureRecognizer readMoreGestureRecognizer;
 
   @override
   void initState() {
-    gestureRecognizer = TapGestureRecognizer()
+    readMoreGestureRecognizer = TapGestureRecognizer()
       ..onTap = () {
         setState(() {
-          showMORE = !showMORE;
+          showMore = !showMore;
         });
       };
     super.initState();
@@ -28,217 +45,195 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   void dispose() {
-    gestureRecognizer.dispose();
     super.dispose();
+    readMoreGestureRecognizer.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Details',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            'Details',
+            style: textTheme.titleLarge,
+          ),
+          actions: [
+            IconButton(
+                onPressed: () {}, icon: const Icon(IconlyBroken.bookmark))
+          ],
         ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.bookmark_border))
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        children: [
-          Hero(
-            tag: widget.product.image,
-            child: Container(
-              height: 250,
+        body: ListView(
+          padding: const EdgeInsets.all(15.0),
+          children: [
+            SizedBox(
+              height: 240,
               width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(widget.product.image),
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                widget.product.image,
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-          const SizedBox(height: 10.0),
-          Text(
-            widget.product.name,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-          ),
-          Row(
-            children: [
-              const Text(
-                'Available in stork ',
-                style: TextStyle(color: Colors.green, fontSize: 15.0),
-              ),
-              const Spacer(),
-              RichText(
+            const SizedBox(
+              height: 15.0,
+            ),
+            Text(
+              widget.product.name,
+              style:
+                  textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
+            ),
+            Row(
+              children: [
+                Text(
+                  'Availlable in Stock',
+                  style: textTheme.bodyMedium!.copyWith(
+                      color: Colors.green, fontWeight: FontWeight.w500),
+                ),
+                const Spacer(),
+                RichText(
+                    text: TextSpan(children: [
+                  TextSpan(
+                      text: '\$${widget.product.price}/',
+                      style: textTheme.bodyLarge!.copyWith(
+                        letterSpacing: -0.8,
+                        fontWeight: FontWeight.w800,
+                      )),
+                  TextSpan(
+                      text: widget.product.unit,
+                      style:
+                          textTheme.titleSmall!.copyWith(color: Colors.grey)),
+                ])),
+                const SizedBox(
+                  width: 30.0,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const Icon(
+                  IconlyBold.star,
+                  color: Colors.amber,
+                ),
+                RichText(
+                    text: TextSpan(children: [
+                  TextSpan(
+                      text: ' ${widget.product.rating}',
+                      style: textTheme.bodyMedium!.copyWith(
+                          color: Colors.grey, fontWeight: FontWeight.w700)),
+                  TextSpan(
+                      text: ' (${widget.product.reviews})',
+                      style: textTheme.bodyMedium!.copyWith(
+                          color: Colors.grey, fontWeight: FontWeight.w500))
+                ])),
+                const Spacer(),
+                IconButton(
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.green,
+                    ),
+                    onPressed: removeQuantity,
+                    icon: const Icon(
+                      Icons.remove,
+                      color: Colors.white,
+                    )),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text(
+                    '$quantity ${widget.product.unit}',
+                    style: textTheme.bodyLarge!
+                        .copyWith(fontWeight: FontWeight.w700),
+                  ),
+                ),
+                IconButton(
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.green,
+                    ),
+                    onPressed: addQuantity,
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ))
+              ],
+            ),
+            const SizedBox(
+              height: 18.0,
+            ),
+            Text(
+              'Description',
+              style:
+                  textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(
+              height: 8.0,
+            ),
+            RichText(
                 text: TextSpan(children: [
-                  TextSpan(
-                      text: '\$ ${widget.product.price}',
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold)),
-                  const TextSpan(
-                      text: '/kg',
-                      style: TextStyle(
-                          color: Colors.black45, fontWeight: FontWeight.bold))
-                ]),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 5.0,
-          ),
-          Row(
-            children: [
-              const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              Text(
-                '${widget.product.rating}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                width: 3.5,
-              ),
-              Text('(${widget.product.reviews})'),
-              const Spacer(),
-              SizedBox(
-                height: 25,
-                width: 25,
-                child: IconButton(
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.zero,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (count > 0) {
-                        count--;
-                      }
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.remove,
-                    color: Colors.white,
-                    size: 15.0,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Text(
-                  '$count ${widget.product.unit}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(
-                height: 25,
-                width: 25,
-                child: IconButton(
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.zero,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      count++;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    size: 15.0,
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 15.0,
-          ),
-          const Text(
-            'Description',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
+              TextSpan(
+                  text: showMore
+                      ? '${widget.product.description}...'
+                      : '${widget.product.description.substring(0, 80)}...',
+                  style: textTheme.bodyMedium!.copyWith(color: Colors.grey)),
+              TextSpan(
+                  text: showMore ? 'Read less' : 'Read more',
+                  recognizer: readMoreGestureRecognizer,
+                  style: textTheme.bodyMedium!.copyWith(
+                      color: Colors.green, fontWeight: FontWeight.w700))
+            ])),
+            const SizedBox(
+              height: 15.0,
             ),
-          ),
-          const SizedBox(
-            height: 5.0,
-          ),
-          RichText(
-            text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.5,
-                  color: Colors.black54,
-                ),
-                children: [
-                  TextSpan(
-                    text: showMORE == true
-                        ? widget.product.description
-                        : widget.product.description.substring(
-                            0, widget.product.description.length - 100),
-                  ),
-                  TextSpan(
-                    text: showMORE == true ? "Read less" : "...Read more",
-                    recognizer: gestureRecognizer,
-                    style: const TextStyle(
-                        color: Colors.green, fontWeight: FontWeight.bold),
-                  )
-                ]),
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          const Text(
-            'Related Products',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
-          SizedBox(
-            height: 90,
-            child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
+            Text(
+              'Related Products',
+              style:
+                  textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(
+              height: 15.0,
+            ),
+            SizedBox(
+              width: 90.0,
+              height: 90.0,
+              child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(agroProducts[index].image),
-                            fit: BoxFit.cover),
-                        borderRadius: BorderRadius.circular(15.0)),
+                itemCount: services.length,
+                separatorBuilder: (context, index) {
+                  return const SizedBox(
+                    width: 10.0,
                   );
                 },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(width: 8.0);
+                itemBuilder: (context, index) {
+                  final service = services[index];
+                  return Container(
+                    width: 85.0,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        image: DecorationImage(
+                            image: NetworkImage(service.image),
+                            fit: BoxFit.cover)),
+                  );
                 },
-                itemCount: agroProducts.length),
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
-          TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-                padding: const EdgeInsets.all(12.0),
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0))),
-            child: const Text(
-              'Add to Cart',
-              style: TextStyle(color: Colors.white),
+              ),
             ),
-          )
-        ],
-      ),
-    );
+            const SizedBox(
+              height: 20.0,
+            ),
+            TextButton.icon(
+                label: Text(
+                  'Add to cart',
+                  style: textTheme.bodyMedium!.copyWith(color: Colors.white),
+                ),
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.all(14.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    )),
+                onPressed: () {},
+                icon: const Icon(
+                  IconlyLight.bag2,
+                  color: Colors.white,
+                ))
+          ],
+        ));
   }
 }

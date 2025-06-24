@@ -89,7 +89,7 @@ List<AgroProduct> agroProducts = [
     description:
         "Soil is a natural substance made up of minerals, organic matter, liquids, gases, and organisms that supports plant and soil life. It's also known as earth. ",
     image:
-        "https://cropcareequipment.com/wp-content/uploads/2023/05/01-types-of-soil-and-what-to-grow-in-each.jpg",
+        "https://th.bing.com/th/id/R.e1e6ee3ea0335e0953ce0f3e0d67e877?rik=8eqjtFzns3n2kQ&riu=http%3a%2f%2fwww.xnz360.com%2flauploadfile%2f2022%2f0630%2f20220630034645565.png&ehk=vtDJeA%2fQeokZ8LJQ6tQXjUXcGIiMJRVdGocvhh2pb8Q%3d&risl=&pid=ImgRaw&r=0",
     price: 5.0,
     reviews: 180,
     unit: 'kg',
