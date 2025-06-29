@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:agriculture_app/models/service.dart';
 import 'package:flutter/material.dart';
 
@@ -35,18 +37,24 @@ class _ServicesPageState extends State<ServicesPage> {
                     service.image,
                   ),
                   fit: BoxFit.cover)),
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.4),
-            ),
-            child: Text(
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              service.name,
-              style: tetxTheme.bodyMedium!.copyWith(
-                color: Colors.white,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                ),
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  service.name,
+                  style: tetxTheme.bodyLarge!.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),

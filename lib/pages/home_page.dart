@@ -2,6 +2,7 @@ import 'package:agriculture_app/pages/cart_page.dart';
 import 'package:agriculture_app/pages/explore_page.dart';
 import 'package:agriculture_app/pages/profile_page.dart';
 import 'package:agriculture_app/pages/services_page.dart';
+import 'package:agriculture_app/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:badges/badges.dart' as badges;
@@ -65,7 +66,27 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      drawer: const Drawer(),
+      drawer: Drawer(
+        width: 150,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10.0, top: 35.0),
+          child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                  style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(10.0),
+                      backgroundColor: Colors.green.shade200),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const WelcomePage(),
+                    ));
+                  },
+                  icon: const Icon(
+                    IconlyBroken.logout,
+                    size: 30,
+                  ))),
+        ),
+      ),
       body: pages.elementAt(curentIndex),
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
