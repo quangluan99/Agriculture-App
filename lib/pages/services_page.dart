@@ -26,8 +26,6 @@ class _ServicesPageState extends State<ServicesPage> {
       itemBuilder: (context, index) {
         final service = services[index];
         return Container(
-          height: 80,
-          width: 80,
           alignment: Alignment.bottomCenter,
           padding: const EdgeInsets.all(14.0),
           decoration: BoxDecoration(
